@@ -100,6 +100,9 @@ DDate=`date `
 
 clear
 
+#-- output CSV file
+
+
 awk  -v DDATE=${DDate} ' 
   BEGIN { FS="," 
            print "       ===================================="
