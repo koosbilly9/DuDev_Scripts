@@ -13,17 +13,16 @@
 
 # ==========================
 
-# Clean up tmp 
 
+refresh_web_file() {
+# Clean up tmp 
 rm ~/tmp/daily_crypto_*
 
 # use curl to get home page of crypto market cap
-
 curl -fsS https://coinmarketcap.com > ~/tmp/daily_crypto_web.dump
 
 
 # --  seperate out crypto token data --------
-
 # Get data tag 
 grep '\"data\":\[' ~/tmp/daily_crypto_web.dump > ~/tmp/daily_crypto_dump.tmp
 
@@ -50,8 +49,8 @@ cat ~/tmp/daily_crypto_dump4.tmp | awk ' BEGIN { FS="," }
 			      if (index($x,"cmcRank") == 2 )   { cmcrank=$x","  }
 			      if (index($x,"symbol") == 2 )    { symbol=$x","  }
 			      if (index($x,"name") == 2 )      { name=$x"," }
-			      if (index($x,"low24h") == 2 )    { low24h=$x }
-			      if (index($x,"high24h") == 2 )   { high24h=$x }
+			      if (index($x,"low24h") == 2 )    { low24h=$x"," }
+			      if (index($x,"high24h") == 2 )   { high24h=$x"," }
 			      if (index($x,"ath") == 2 )       { ath=$x","  }
 			      if (index($x,"maxSupply") == 2 ) { maxSupply=$x","  }
 			      if (index($x,"dominance") == 2 ) { dominance=$x","  }
@@ -92,13 +91,27 @@ cat ~/tmp/daily_crypto_dump5.tmp | awk ' BEGIN { FS="," }
                     ' > ~/tmp/daily_crypto_DailyCryptoReport.rep
 		   
 # --  seperate out crypto token data --------
+}
+
+
+# check if files was modified more than 1 hour ago = 0.0416
+#                                       10 minutes = 0.0069
+run_refresh=`find ~/tmp/ -name daily_crypto_DailyCryptoReport.rep -mtime 0.0416 | wc -l`
+
+if [[ $1 == "force" ]] ; then run_refresh=1; fi 
+
+if (( ${run_refresh} == 1 )) ; then
+echo " Refresh web files .... "
+refresh_web_file
+else
+echo "Web files have been refreshed in the last hour "
+fi
 
 
 # ----------   print Daily Crypto report ----------
 
 DDate=`date `
 
-clear
 
 #-- output CSV file
 
@@ -107,10 +120,17 @@ awk  -v DDATE=${DDate} '
   BEGIN { FS="," 
            print "       ===================================="
 	   print "The DAILY Crypto Report @ " DDATE
-	   print "       ==================================== " 
+	   print "       ==================================== \n" 
+	   printf("%5s %20s %20s %20s \n","Ticker","Price","ATH","% from ATH")
 	}
 	{
-	  print $0
+	  split($1,sym,":")
+	  split($4,price,":")
+	  split($8,ath,":")
+	  
+	  pf_ath=((price[2]/ath[2]) * 100)
+	  
+	  printf("%5s %20s %20s %20s \n",sym[2],price[2],ath[2],pf_ath)
 	}
   END   {
           print " =============== END =============== "
