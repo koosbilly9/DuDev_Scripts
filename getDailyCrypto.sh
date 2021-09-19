@@ -56,7 +56,7 @@ cat ~/tmp/daily_crypto_dump4.tmp | awk ' BEGIN { FS="," }
 			      if (index($x,"dominance") == 2 ) { dominance=$x","  }
 			      
 			      # Get quote of USD price
-			      Get quote of USD price
+			      
 			      if (index($x,"{\"name\":\"USD\"") == 2 ) { readNextPrice=True  } else {readNextPrice=False}
 			      if (index($x,"price") == 2 )      { USDPrice=$x"," }
 			     
@@ -65,7 +65,9 @@ cat ~/tmp/daily_crypto_dump4.tmp | awk ' BEGIN { FS="," }
 			    }
 			   } 
 	           ' > ~/tmp/daily_crypto_dump5.tmp
-		   
+
+if [[ $2 == "favorite" ]] ; then
+echo "true \$1 = $1"		   
 cat ~/tmp/daily_crypto_dump5.tmp | awk ' BEGIN { FS="," }
                             { 
 			      favorite_list[0]="ADA"
@@ -78,6 +80,7 @@ cat ~/tmp/daily_crypto_dump5.tmp | awk ' BEGIN { FS="," }
 			      favorite_list[7]="SNX"
 			      favorite_list[8]="DOT"
 			      favorite_list[9]="BETH"
+			      favorite_list[10]="AVAX"
 			      
 			      for ( x in favorite_list)
 			       {
@@ -89,6 +92,11 @@ cat ~/tmp/daily_crypto_dump5.tmp | awk ' BEGIN { FS="," }
 			       }
 			    }
                     ' > ~/tmp/daily_crypto_DailyCryptoReport.rep
+else
+echo "false \$1= $1"
+cp ~/tmp/daily_crypto_dump5.tmp ~/tmp/daily_crypto_DailyCryptoReport.rep
+
+fi
 		   
 # --  seperate out crypto token data --------
 }
@@ -127,10 +135,11 @@ awk  -v DDATE=${DDate} '
 	  split($1,sym,":")
 	  split($4,price,":")
 	  split($8,ath,":")
+	  split($2,cmcRank,":")
 	  
 	  pf_ath=((price[2]/ath[2]) * 100)
 	  
-	  printf("%5s %20s %20s %20s \n",sym[2],price[2],ath[2],pf_ath)
+	  printf("%5s %5s %20s %20s %20s \n",sym[2],cmcRank[2],price[2],ath[2],pf_ath)
 	}
   END   {
           print " =============== END =============== "
