@@ -16,6 +16,7 @@ Git working normal (1,2,3)
 1) Stage\'s all changed files before commit : \" git add . \"
 2) commits staged files : \" git commit -m \" new Commit message \"
 3) push commit to repo : \" git push \"
+4) Show last 5 commits: \" git log -n 5 \"
 Git General
 ------------
 10) Git Version : \"git --Version \"
@@ -53,6 +54,7 @@ case $choice in
      read gitCommitMess ;
      git commit -m "$gitCommitMess" ;;
 3) git push ;;
+4) git log -n 5 ;;
 10) git --version ;; 
 100) git remote -v ;;
 101) echo " Edit command and run \"git remote set-url origin <url> \"" ;;
