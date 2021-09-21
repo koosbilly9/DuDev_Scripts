@@ -2,15 +2,13 @@
 
 # ==========================
 
-# Purpose : Get daily crypto report
+# Purpose : Get daily crypto report from coinmarketcap
 # se
 # Billy - 2021/09/07
 
 # History:
 #---------
-
 # 2021/09/07 -- Billy -- Initial
-
 # ==========================
 
 

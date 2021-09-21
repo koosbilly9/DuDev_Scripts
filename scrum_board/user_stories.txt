@@ -1,0 +1,6 @@
+1) as the PO I need to see daily crypto cap
+2) as the team devops manager I need to learn jenkins
+3) as the devops engineer I need to build a repo of rpm packages
+4) as the devops eng I need to learn rpm packages
+5) as the devops eng I need to learn how to create a repo
+6) as the full stack dev I need to learn flutter : ?
