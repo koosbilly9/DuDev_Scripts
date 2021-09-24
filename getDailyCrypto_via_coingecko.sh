@@ -13,8 +13,8 @@ source ./setTextColor.source
 #                                       10 minutes = 0.0069
 run_refresh=`find ~/tmp/ -name dc_rep_coingecko_markets.json -mtime 0.0416 | wc -l`
 
-if (( ${run_refresh} == 1 )) ; then
 # check if file is older than 1 hour
+if (( ${run_refresh} == 1 )) ; then
 
 echo " Rule 1 : DON'T LOSS ANY MONEY" > ~/tmp/dc_rep_coingecko_date.txt
 echo " Report info last updated at: `date` " >> ~/tmp/dc_rep_coingecko_date.txt
@@ -26,8 +26,6 @@ curl -X 'GET' \
 cat ~/tmp/dc_rep_coingecko_markets.json
 
 fi
-
-
 
 #===============
 # Display report 
@@ -97,22 +95,21 @@ BEGIN {
      # check that ists the last field before printing variables		     
      if ( x == (NF-1)) { 
         
-       OFS="  \t  "
+       OFS="    \t"
        
        # check if in favorites list  
        # loop thu fields 
        
-       texOn=""           
-       for ( item in arr2 ) { if ( symbol == arr2[item]) {texOn=texBlue  }  }
-     
-       # Buy if current price 70% below ATH (put in stop loss)
-       if (Per_ATH > 70) {
-           print texGreen "BUY : " texOff , texOn symbol texOff , Per_ATH "%", "$"USDPrice, "$"ath, name 
-	}
+       texFav="" 
+       percentageColor=""          
+       for ( item in arr2 ) { if ( symbol == arr2[item]) {texFav=texBlue  }  }
        
-       # SELL when current price 10% below ATH (put in stop loss)
-       if ( Per_ATH < 10) { 
-         print texRed "SELL: " texOff , texOn symbol texOff , Per_ATH "%", "$"USDPrice, "$"ath,  name
+       if ( Per_ATH < 10) {percentageColor=texRed}  # SELL when current price 10% below ATH (put in stop loss)
+       if (Per_ATH > 80)  {percentageColor=texGreen} # Buy if current price 70% below ATH (put in stop loss)
+          
+       # print Favorites and but/sell candidates
+       if ( texFav != "" || percentageColor != "") { 
+         print texFav symbol texOff , percentageColor Per_ATH "%" texOff , "$"USDPrice, "$"ath,  name
 	}
       }
    }
