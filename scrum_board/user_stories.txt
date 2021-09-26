@@ -1,6 +1,27 @@
-1) as the PO I need to see daily crypto cap
-2) as the team devops manager I need to learn jenkins
-3) as the devops engineer I need to build a repo of rpm packages
-4) as the devops eng I need to learn rpm packages
-5) as the devops eng I need to learn how to create a repo
-6) as the full stack dev I need to learn flutter : ?
+ 1) as the PO I need to see daily crypto cap
+ 2) as the team devops manager I need to learn jenkins
+ 3) as the devops engineer I need to build a repo of rpm packages
+ 4) as the devops eng I need to learn rpm packages
+ 5) as the devops eng I need to learn how to create a repo
+ 6) as the full stack dev I need to learn flutter : ?
+ 7) as the PO I need to see RSI , MFI , StoRSI of my favorite crypto ?
+ 8) Epic : Dieet app 
+ 9) Epic : Crypto Buy / Sell app
+10) Epic : Tag tracking 
+11) Epic : House deal investment app
+12) Epic : Budget app
+13) Epic : China mall retail app
+14) Epic : Find multiple streams of income
+15) Epic : Solar app 
+16) Epic : Security camera app
+17) Epic : Tax app
+19) Epic : Train Heino Dev/ops
+20) Epic : Train Heino practical DEv/Ops PPE
+21) Epic : Train Heino Unix red hat admin certified
+22) Epic : Train Heino Full stack Dev - Flutter
+23) Epic : Train Heino B-Com IT / Finish Diploma 
+24) Epic : Train Cara Scrum Master
+25) Epic : Train Cara Java certified dev
+26) Epic : Train Cara B-COM IT
+27) Epic : Train Sone Full stack web dev or Flutter
+28) Epic : Train Sone B-com IT

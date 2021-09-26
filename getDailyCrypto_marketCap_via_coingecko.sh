@@ -6,21 +6,22 @@
 #--------
 #
 #2021/09/20 Heino create initial report
+#2021/09/24 Billy move reporting to ./showDailyCryptoReport
 #=======================================================
 
-#Call Url
+# check if files was modified more than 1 hour ago = 0.0416
+#                                       10 minutes = 0.0069
+run_refresh=`find ~/tmp/ -name dc_MarketCap.json -mtime 0.0416 | wc -l`
+
+# check if file is older than 1 hour
+if (( ${run_refresh} == 1 )) ; then
 
 curl -X 'GET' \
   'https://api.coingecko.com/api/v3/global' \
   -H 'accept: application/json' > ~/tmp/dc_MarketCap.json
-  
-#cat ~/tmp/dc_MarketCap.json
 
-#Showing market cap with awk
+cat ~/tmp/dc_MarketCap.json
 
-cat ~/tmp/dc_MarketCap.json | awk '
-BEGIN {RS=","; FS=":"; marketCap="No"}
-$1 == "\"total_market_cap\"" {marketCap="yes"}
-marketCap == "yes" && $1 == "\"usd\"" {marketCapusd=$2 ; marketCap="No"}
-END {print "Todays total market cap:" marketCapusd }
-'
+fi
+
+
