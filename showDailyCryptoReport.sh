@@ -13,9 +13,11 @@ source ./setTextColor.source
 # Get Data from url's
 #---------------------
 
-./getDailyCrypto_via_coingecko.sh
-./getDailyCrypto_marketCap_via_coingecko.sh
-favoriteList=`cat ~/tmp/dc_rep_favorites.rep | awk 'BEGIN {FS=","}; {printf("%s,",$1)}'  `
+~/DuDev_scripts/getDailyCrypto_via_coingecko.sh
+~/DuDev_Scripts/getDailyCrypto_marketCap_via_coingecko.sh
+
+favoriteList=`cat ~/DuDev_Scripts/list/dc_rep_favorites.rep | awk 'BEGIN {FS=","}; {printf("%s,",$1)}'  `
+watch_List=`cat ~/DuDev_Scripts/list/dc_rep_watch_list.rep | awk 'BEGIN {FS=","}; {printf("%s,",$1)}'  `
 
 # create Buy Sell report
 #-------------------------
@@ -53,14 +55,16 @@ echo " "
 # create Buy Sell report
 #------------------------
 cat ~/tmp/dc_rep_coingecko_markets.json | awk -v texRed=$awkTexRed -v texGreen=$awkTexGreen \
- -v texOff=$awkTexOff -v texBlue=$awkTexBlue -v favList=$favoriteList '
+ -v texOff=$awkTexOff -v texBlue=$awkTexBlue -v texPurple=$awkTexPurple -v favList=$favoriteList -v watchList=$watch_List '
 BEGIN { 
         # use json tag ID as record seperator
         RS="{\"id\""
 	# use , as field seperator
         FS="," 
-	# split scalar into array
-	split(favList,arr2,",") 
+	# split scalar into array favorite list
+	split(favList,favArr,",") 
+	# split scalar into array watch list
+	split(watchList,watchArr,",")
 	# Print header
 	printf("%s \t\t %s \t %s \t %s \t\t %s \n","Ticker","Below ATH","Current","Price","Name")
 	print "-------------------------------------------------------------------------"
@@ -86,16 +90,27 @@ BEGIN {
        # check if in favorites list  
        # loop thu fields 
        
+       # Reset colors
        texFav="" 
-       percentageColor=""          
-       for ( item in arr2 ) { if ( symbol == arr2[item]) {texFav=texBlue  }  }
+       texWatch=""
+       percentageColor="" 
+       texName=""
        
-       if ( Per_ATH < 10) {percentageColor=texRed}  # SELL when current price 10% below ATH (put in stop loss)
-       if (Per_ATH > 80)  {percentageColor=texGreen} # Buy if current price 70% below ATH (put in stop loss)
+       # Check if in Favorite List         
+       for ( item in favArr ) { if ( symbol == favArr[item]) {texFav=texBlue  }  }
+       
+       # Check if in Watch List         
+       for ( item in watchArr ) { if ( symbol == watchArr[item]) {texWatch=texPurple  }  }
+       
+       # SELL when current price 10% below ATH (put in stop loss)
+       if ( Per_ATH < 10) {percentageColor=texRed ; if (texFav != "") { texName=percentageColor}} 
+       
+       # Buy if current price 70% below ATH (put in stop loss)
+       if (Per_ATH > 80)  {percentageColor=texGreen  ; if (texFav != "") { texName=percentageColor}} 
           
        # print Favorites and but/sell candidates
        if ( texFav != "" || percentageColor != "") { 
-         print texFav symbol texOff , percentageColor Per_ATH "%" texOff , "$"USDPrice, "$"ath,  name
+         print texWatch texFav symbol texOff , percentageColor Per_ATH "%" texOff , percentageColor "$"USDPrice texOff,texWatch texFav "$"ath texOff,  texWatch texFav name texOff
 	}
       }
    }
