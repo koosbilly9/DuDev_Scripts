@@ -69,8 +69,9 @@ echo "               ================"
 
 # create Buy Sell report
 #------------------------
-cat ~/tmp/dc_rep_coingecko_markets.json | awk -v texRed=$awkTexRed -v texGreen=$awkTexGreen \
- -v texOff=$awkTexOff -v texBlue=$awkTexBlue -v texPurple=$awkTexPurple -v favList=$favoriteList -v watchList=$watch_List '
+cat ~/tmp/dc_rep_coingecko_markets.json | gawk -v texRed=$awkTexRed -v texGreen=$awkTexGreen \
+ -v texOff=$awkTexOff -v texBlue=$awkTexBlue -v texPurple=$awkTexPurple -v favList=$favoriteList \
+ -v texYellow=$awkTexYellow -v texCyan=$awkTexCyan -v watchList=$watch_List '
 BEGIN { 
         # use json tag ID as record seperator
         RS="{\"id\""
@@ -117,11 +118,18 @@ BEGIN {
        # Check if in Watch List         
        for ( item in watchArr ) { if ( symbol == watchArr[item]) {texWatch=texPurple  }  }
        
+       
+       # SELL when current price 20% below ATH (put in stop loss)
+       if ( Per_ATH < 20) {percentageColor=texYellow ; if (texFav != "") { texName=percentageColor}} 
+       
        # SELL when current price 15% below ATH (put in stop loss)
        if ( Per_ATH < 15) {percentageColor=texRed ; if (texFav != "") { texName=percentageColor}} 
        
+       # Buy if current price 60% below ATH (put in stop loss)
+       if (Per_ATH > 60)  {percentageColor=texCyan  ; if (texFav != "") { texName=percentageColor}} 
+       
        # Buy if current price 75% below ATH (put in stop loss)
-       if (Per_ATH > 75)  {percentageColor=texGreen  ; if (texFav != "") { texName=percentageColor}} 
+       if (Per_ATH > 75)  {percentageColor=texGreen  ; if (texFav != "") { texName=percentageColor}}
           
        # print Favorites and but/sell candidates
        if ( texFav != "" || texWatch != "") { 
@@ -130,6 +138,7 @@ BEGIN {
       }
    }
   }
+  END { print "x2 " texCyan "above 60 " texOff texYellow "below 20 " texOff "/ x3 " texGreen " above 75 " texOff texRed "below 15" texOff}
 ' > ~/tmp/dc_rep_coingecko_buy_sell.rep
 
 cat ~/tmp/dc_rep_coingecko_buy_sell.rep

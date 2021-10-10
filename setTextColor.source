@@ -40,16 +40,18 @@
 
 #shell
 texOff=$'\e[0m'
-texRed=$'\e[1:31m'
-texGreen=$'\e[1:32m'
-texBlue=$'\e[1:34m'
-texYellow=$'\e[1:33m'
-texPurple=$'\e[1:35m'
+texRed=$'\e[31m'
+texGreen=$'\e[32m'
+texBlue=$'\e[34m'
+texYellow=$'\e[33m'
+texPurple=$'\e[35m'
+texCyan=$'\e[36m'
 
 #awk 
 awkTexOff='\033[0m'
-awkTexRed='\033[1:31m'
-awkTexGreen='\033[1:32m'
-awkTexBlue='\033[1:34m'
-awkTexYellow='\033[1:33m'
-awkTexPurple=$'\033[1:35m'
+awkTexRed='\033[31m'
+awkTexGreen='\033[32m'
+awkTexBlue='\033[34m'
+awkTexYellow='\033[33m'
+awkTexPurple=$'\033[35m'
+awkTexCyan=$'\033[36m'
