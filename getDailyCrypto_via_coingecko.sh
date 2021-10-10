@@ -12,6 +12,10 @@
 #                                       10 minutes = 0.0069
 run_refresh=`find ~/tmp/ -name dc_rep_coingecko_markets.json -mtime 0.0416 | wc -l`
 
+if [ $1 == "force" ] ; then
+run_refresh=1
+fi
+
 # check if file is older than 1 hour
 if (( ${run_refresh} == 1 )) ; then
 
