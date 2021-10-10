@@ -31,12 +31,13 @@ echo " Report info last updated at: `date` "
 echo " ================================================================"
 echo " "
 
-# show number of fav coins
+# show number of fav / watch coins
 echo " Number of favorites : `cat ~/tmp/dc_rep_favorites.rep  | wc -l` "
+echo " Number of watch     : `cat ~/tmp/dc_rep_watch_list.rep  | wc -l` "
 
 #Showing market cap with awk
 
-cat ~/tmp/dc_MarketCap.json | awk '
+cat ~/tmp/dc_MarketCap.json | awk -v todayDate=$(date "+%Y/%m/%d-%H:%M:%S" ) '
 # set Record seperator / field seperator / marketCap is shown in multi currencies var marketCap indicate list start
 BEGIN {RS=","; FS=":"; marketCap="No"}
 
@@ -47,10 +48,24 @@ $1 == "\"total_market_cap\"" {marketCap="yes"}
 marketCap == "yes" && $1 == "\"usd\"" {marketCapusd=$2 ; marketCap="No"}
 
 #print usd price
-END {print "Todays total market cap:" marketCapusd }
+END {print todayDate "," marketCapusd }
+' > ~/DuDev_Scripts/list/dc_rep_now_marketcap.csv
+
+athMarketCapFil=`cat ~/DuDev_Scripts/list/dc_rep_ATH_marketcap.csv | awk 'BEGIN {FS=","}; {printf("%s,",$2)}'`
+
+cat ~/DuDev_Scripts/list/dc_rep_now_marketcap.csv | \
+awk -v athMarketCap=$athMarketCapFil '
+   BEGIN { 
+           FS=","
+           split(athMarketCap,athMarketCapArr,",") 
+	 }
+         { 
+	   persentage_ath = (1 - ($2/athMarketCapArr[1]) ) * 100
+	   print persentage_ath "% below ATH " athMarketCapArr[1]
+	   print "Coin market cap @ " $1 "  $" $2 }
 '
 
-echo " "
+echo "               ================"
 
 # create Buy Sell report
 #------------------------
@@ -102,15 +117,15 @@ BEGIN {
        # Check if in Watch List         
        for ( item in watchArr ) { if ( symbol == watchArr[item]) {texWatch=texPurple  }  }
        
-       # SELL when current price 10% below ATH (put in stop loss)
-       if ( Per_ATH < 10) {percentageColor=texRed ; if (texFav != "") { texName=percentageColor}} 
+       # SELL when current price 15% below ATH (put in stop loss)
+       if ( Per_ATH < 15) {percentageColor=texRed ; if (texFav != "") { texName=percentageColor}} 
        
-       # Buy if current price 70% below ATH (put in stop loss)
-       if (Per_ATH > 80)  {percentageColor=texGreen  ; if (texFav != "") { texName=percentageColor}} 
+       # Buy if current price 75% below ATH (put in stop loss)
+       if (Per_ATH > 75)  {percentageColor=texGreen  ; if (texFav != "") { texName=percentageColor}} 
           
        # print Favorites and but/sell candidates
-       if ( texFav != "" || percentageColor != "") { 
-         print texWatch texFav symbol texOff , percentageColor Per_ATH "%" texOff , percentageColor "$"USDPrice texOff,texWatch texFav "$"ath texOff,  texWatch texFav name texOff
+       if ( texFav != "" || texWatch != "") { 
+         print texWatch texFav symbol texOff , percentageColor Per_ATH "%" texOff , percentageColor "$"USDPrice texOff, percentageColor "$"ath texOff,  texWatch texFav name texOff
 	}
       }
    }
