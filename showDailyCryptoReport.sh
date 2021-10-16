@@ -53,6 +53,9 @@ END {print todayDate "," marketCapusd }
 
 athMarketCapFil=`cat ~/DuDev_Scripts/list/dc_rep_ATH_marketcap.csv | awk 'BEGIN {FS=","}; {printf("%s,",$2)}'`
 
+curMarketCapFil=`cat ~/DuDev_Scripts/list/dc_rep_now_marketcap.csv | awk 'BEGIN {FS=","}; {printf("%s,",$2)}'`
+
+
 cat ~/DuDev_Scripts/list/dc_rep_now_marketcap.csv | \
 awk -v athMarketCap=$athMarketCapFil '
    BEGIN { 
@@ -95,7 +98,7 @@ BEGIN {
      if (index($x,"name") == 2 )                  { split($x,arr1,":") ; name=arr1[2] }
      if (index($x,"current_price") == 2 )         { split($x,arr1,":") ; USDPrice=arr1[2] }
      if (index($x,"ath\"") == 2 )                 { split($x,arr1,":") ; ath=arr1[2]  }
-     if (index($x,"max_supply") == 2 )            { split($x,arr1,":") ; maxSupply=arr1[2]  }
+     if (index($x,"max_supply") == 2 )            { split($x,arr1,":") ; maxSupply=substr("------------" arr1[2],length(arr1[2]) - 18)  }
      if (index($x,"ath_change_percentage") == 2 ) { split($x,arr1,":") ; Per_ATH=(( arr1[2] * -1 ))  }
 
      # check that ists the last field before printing variables		     
@@ -133,12 +136,23 @@ BEGIN {
           
        # print Favorites and but/sell candidates
        if ( texFav != "" || texWatch != "") { 
-         print texWatch texFav symbol texOff , percentageColor Per_ATH "%" texOff , percentageColor "$"USDPrice texOff, percentageColor "$"ath texOff,  texWatch texFav name texOff
+         print texWatch texFav symbol texOff , percentageColor Per_ATH "%" texOff , percentageColor "$"USDPrice texOff, percentageColor "$"ath texOff,  texWatch texFav name texOff , " ", maxSupply
 	}
       }
    }
   }
   END { print "x2 " texCyan "above 60 " texOff texYellow "below 20 " texOff "/ x3 " texGreen " above 75 " texOff texRed "below 15" texOff}
 ' > ~/tmp/dc_rep_coingecko_buy_sell.rep
+
+
+ATH=`echo "$athMarketCapFil" | awk ' {print substr($1,1,length($1) -1 ) } '`
+CUR=`echo "$curMarketCapFil" | awk ' {print substr($1,1,length($1) -1 ) } '`
+
+
+
+if [ $ATH -lt $CUR ] ; then
+ echo " YEBO TYES "
+fi
+
 
 cat ~/tmp/dc_rep_coingecko_buy_sell.rep

@@ -5,8 +5,8 @@
 #History: 
 #--------
 #
-#2021/09/20 Heino create initial report
-#2021/09/24 Billy move reporting to ./showDailyCryptoReport
+# 2021/09/20 Heino 	create initial report
+# 2021/09/24 Billy 	move reporting to ./showDailyCryptoReport
 #==============ls=========================================
 
 # check if files was modified more than 1 hour ago = 0.0416
@@ -27,5 +27,3 @@ curl -X 'GET' \
 cat ~/tmp/dc_MarketCap.json
 
 fi
-
-
