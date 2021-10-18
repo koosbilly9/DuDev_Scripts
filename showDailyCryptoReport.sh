@@ -65,7 +65,9 @@ awk -v athMarketCap=$athMarketCapFil '
          { 
 	   persentage_ath = (1 - ($2/athMarketCapArr[1]) ) * 100
 	   print persentage_ath "% below ATH " athMarketCapArr[1]
-	   print "Coin market cap @ " $1 "  $" $2 }
+	   print "Coin market cap @ " $1 "  $" $2 
+	   if (persentage_ath < 1) { print "!!!! NEW MARKET CAP HIGH !!!" }
+	 }
 '
 
 echo "               ================"
@@ -141,17 +143,21 @@ BEGIN {
       }
    }
   }
-  END { print "x2 " texCyan "above 60 " texOff texYellow "below 20 " texOff "/ x3 " texGreen " above 75 " texOff texRed "below 15" texOff}
+  END { 
+        print " "
+        print "x2 " texCyan  " below 60 (Buy) " texOff texYellow " below 20 (Sell) " texOff ;
+        print "x3 " texGreen " below 75 (buy) " texOff texRed    " below 15 (Sell)  " texOff
+      }
 ' > ~/tmp/dc_rep_coingecko_buy_sell.rep
 
 
-ATH=`echo "$athMarketCapFil" | awk ' {print substr($1,1,length($1) -1 ) } '`
-CUR=`echo "$curMarketCapFil" | awk ' {print substr($1,1,length($1) -1 ) } '`
+ATH=`echo "$athMarketCapFil" | awk ' {print substr($1,1,index($1,".") - 1) } '`
+CUR=`echo "$curMarketCapFil" | awk ' {print substr($1,1,index($1,".") - 1) } '`
 
 
 
-if [ $ATH -lt $CUR ] ; then
- echo " YEBO TYES "
+if (( $ATH < $CUR )) ; then
+ echo "`date +'%Y/%m/%d-%H:%M:%S' `,$curMarketCapFil " > ./list/dc_rep_ATH_marketcap.csv
 fi
 
 
